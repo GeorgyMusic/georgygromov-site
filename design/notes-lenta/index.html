@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Нотная лента событий - прототип</title>
+<style>
+  :root {
+    --bg: #0e0f14; --ink: #f2efe9; --muted: #9a9384; --line: #3a3630;
+    --accent: #c9a227; --accent2: #7fb3d5; --card: #171922;
+  }
+  body.light {
+    --bg: #faf8f4; --ink: #1b1a17; --muted: #6f6a60; --line: #d8d2c6;
+    --accent: #9a7b1f; --accent2: #2d6a94; --card: #ffffff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font: 400 17px/1.6 Georgia, "Times New Roman", serif;
+    transition: background .4s, color .4s;
+    padding: 4rem 1.5rem 6rem;
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; }
+  h1 { font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 400; letter-spacing: -.01em; margin-bottom: .6rem; }
+  .lead { color: var(--muted); max-width: 42rem; margin-bottom: 2.5rem; }
+  .switch {
+    position: fixed; right: 1.2rem; top: 1.2rem; z-index: 10;
+    font: 500 13px/1 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    letter-spacing: .08em; text-transform: uppercase;
+    background: var(--card); color: var(--ink); border: 1px solid var(--line);
+    padding: .7rem 1.1rem; border-radius: 2rem; cursor: pointer;
+  }
+  .season { margin-bottom: 3.2rem; }
+  .season h2 {
+    font-size: .8rem; letter-spacing: .18em; text-transform: uppercase;
+    color: var(--muted); font-weight: 500; margin-bottom: .8rem;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+  svg { width: 100%; height: auto; display: block; overflow: visible; }
+  .staff { stroke: var(--line); stroke-width: 1; }
+  .barline { stroke: var(--line); stroke-width: 1; opacity: .55; }
+  .monthlabel {
+    fill: var(--muted); font: 400 11px -apple-system, BlinkMacSystemFont, sans-serif;
+    letter-spacing: .06em;
+  }
+  .note { cursor: pointer; }
+  .note .head { fill: var(--accent); transition: transform .18s ease, fill .18s; transform-box: fill-box; transform-origin: center; }
+  .note.duo .head { fill: var(--accent2); }
+  .note .stem { stroke: var(--accent); stroke-width: 1.6; }
+  .note.duo .stem { stroke: var(--accent2); }
+  .note:hover .head { transform: scale(1.35); }
+  .note .lbl { fill: var(--ink); font: 400 11px -apple-system, BlinkMacSystemFont, sans-serif; opacity: .75; }
+  .panel {
+    margin-top: 1rem; background: var(--card); border: 1px solid var(--line);
+    border-radius: 4px; padding: 1.2rem 1.4rem; min-height: 5.4rem;
+  }
+  .panel .d { font: 500 12px -apple-system, sans-serif; letter-spacing: .1em; color: var(--muted); text-transform: uppercase; }
+  .panel .t { font-size: 1.25rem; margin: .3rem 0 .5rem; }
+  .panel .p { color: var(--muted); font-size: .98rem; }
+  .legend { display: flex; gap: 1.6rem; margin-bottom: 2rem; font-size: .9rem; color: var(--muted); }
+  .dot { display: inline-block; width: .75rem; height: .75rem; border-radius: 50%; margin-right: .45rem; vertical-align: -1px; }
+  .dot.solo { background: var(--accent); }
+  .dot.duo { background: var(--accent2); }
+</style>
+</head>
+<body>
+<button class="switch" onclick="document.body.classList.toggle('light')">Сменить тему</button>
+<div class="wrap">
+  <h1>События сезона</h1>
+  <p class="lead">Прототип нотной ленты: каждый концерт - нота на стане. Высота ноты различает сольный вечер и дуэт, по горизонтали идут месяцы сезона. Наведите курсор на ноту.</p>
+  <div class="legend">
+    <span><span class="dot solo"></span>сольный вечер</span>
+    <span><span class="dot duo"></span>дуэт с Марией</span>
+  </div>
+  <div id="seasons"></div>
+  <div class="panel" id="panel">
+    <div class="d">выберите ноту</div>
+    <div class="t">Нотная лента показывает сезон целиком</div>
+    <div class="p">Программа концерта появится здесь.</div>
+  </div>
+</div>
+<script>
+const DATA = [
+ {
+  "date": "2022-11-20",
+  "title": "Duokonzert, Christophori",
+  "who": "дуэт",
+  "prog": "Reger. Variationen und Fuge über ein Thema von Mozart Op. 132; Bruch. Fantasie für 2 Klaviere Op. 11; Debussy. En blanc et noir; Saint-Saens. Danse macabre; Busoni. Duettino concertante; Brahms. Variationen über ein Thema von Haydn; на бис Lutoslawski"
+ },
+ {
+  "date": "2022-12-09",
+  "title": "Rezital, Christophori",
+  "who": "Георгий",
+  "prog": "Bach. Partita No. 1 B-Dur BWV 825; Tschaikowski. Die Jahreszeiten Op. 37bis"
+ },
+ {
+  "date": "2024-05-29",
+  "title": "Rezital, Christophori",
+  "who": "Георгий",
+  "prog": "«Meisterwerke der deutschen Klassik und Romantik»: Beethoven. Sonate No. 1 f-moll Op. 2 No. 1; Beethoven. Sonate No. 6 F-Dur Op. 10 No. 2; Schumann. Humoreske Op. 20"
+ },
+ {
+  "date": "2024-07-14",
+  "title": "Konzert, Christophori",
+  "who": "Георгий",
+  "prog": "французская программа, состав уточнить"
+ },
+ {
+  "date": "2024-09-18",
+  "title": "Rezital, Christophori",
+  "who": "Георгий",
+  "prog": "программы нет"
+ },
+ {
+  "date": "2024-09-30",
+  "title": "Duokonzert",
+  "who": "дуэт",
+  "prog": "Mozart. Sonate D-Dur; Ravel. Rhapsodie espagnole; Prokofiev. Cinderella"
+ },
+ {
+  "date": "2024-11-17",
+  "title": "Rezital, Christophori",
+  "who": "Георгий",
+  "prog": "Mozart. Sonate c-moll KV 457; Tschaikowski. Die Jahreszeiten Op. 37a"
+ },
+ {
+  "date": "2024-12-12",
+  "title": "Duokonzert, Christophori",
+  "who": "дуэт",
+  "prog": "Bach. Partita No. 1 B-Dur BWV 825; Beethoven. Sonate No. 5 Op. 10 No. 1; Schumann. Humoreske Op. 20 B-Dur"
+ },
+ {
+  "date": "2025-02-28",
+  "title": "Duokonzert, Christophori",
+  "who": "дуэт",
+  "prog": "Bruch. Fantasie für 2 Klaviere Op. 11; Debussy. En blanc et noir; Saint-Saens. Danse macabre; Busoni. Duettino concertante; Brahms. Variationen über ein Thema von Haydn; на бис Lutoslawski"
+ },
+ {
+  "date": "2025-04-09",
+  "title": "Концерт с Державиной",
+  "who": "Георгий",
+  "prog": "Haydn. Variationen «Il Maestro e lo Scolare»; Schubert. 4 Polonaises Op. 599; Debussy. Suite"
+ },
+ {
+  "date": "2025-04-29",
+  "title": "Rezital, Christophori",
+  "who": "Георгий",
+  "prog": "Beethoven. Sonate Pathétique; Beethoven. Mondschein-Sonate; далее по переписке уточнить вторую часть"
+ },
+ {
+  "date": "2025-05-29",
+  "title": "Rezital, Christophori",
+  "who": "Георгий",
+  "prog": "Schubert. Sonate B-Dur; Rachmaninow. 3 Moments musicaux Op. 16; Variationen über ein Thema von Corelli Op. 42"
+ },
+ {
+  "date": "2025-09-16",
+  "title": "Rezital «Hommage à Lipatti», Christophori",
+  "who": "Георгий",
+  "prog": "Bach. Partita No. 1 B-Dur; Chopin. Walzer (выборка); Schubert. Impromptus D. 899; Bach-Busoni. Ich ruf zu dir, Herr Jesu Christ"
+ },
+ {
+  "date": "2025-09-27",
+  "title": "Rezital, Lüneburg",
+  "who": "Георгий",
+  "prog": "«3 Genies. 3 Freunde. 3 Wege»"
+ },
+ {
+  "date": "2025-12-07",
+  "title": "Duokonzert, Christophori",
+  "who": "дуэт",
+  "prog": "программы нет"
+ },
+ {
+  "date": "2026-01-25",
+  "title": "Duokonzert, Christophori",
+  "who": "дуэт",
+  "prog": "Bruch. Fantasie für 2 Klaviere Op. 11; Debussy. En blanc et noir; Saint-Saens. Danse macabre; Busoni. Duettino concertante; Brahms. Variationen über ein Thema von Haydn"
+ },
+ {
+  "date": "2026-03-01",
+  "title": "Rezital, Christophori",
+  "who": "Георгий",
+  "prog": "Mozart. Sonate B-Dur KV 333; Bartok. Suite Op. 14; Schumann. Humoreske Op. 20"
+ },
+ {
+  "date": "2026-03-22",
+  "title": "Rezital, Christophori",
+  "who": "Георгий",
+  "prog": "программы нет"
+ },
+ {
+  "date": "2026-04-17",
+  "title": "Duokonzert",
+  "who": "дуэт",
+  "prog": "Schumann. 6 Studien in kanonischer Form Op. 56; Rosenblatt. Fantasie über Themen aus Carmen"
+ },
+ {
+  "date": "2026-06-28",
+  "title": "Rezital, Christophori",
+  "who": "Георгий",
+  "prog": "Chopin. 10 Mazurkas; Chopin. Sonate No. 2 b-moll Op. 35; Schumann. Carnaval Op. 9"
+ },
+ {
+  "date": "2026-09-11",
+  "title": "Duokonzert, Christophori",
+  "who": "дуэт",
+  "prog": "Brahms. Sonate für 2 Klaviere Op. 34b; Milhaud. Scaramouche Op. 165b; Debussy. En blanc et noir"
+ },
+ {
+  "date": "2026-10-12",
+  "title": "Konzert, Christophori",
+  "who": "Георгий",
+  "prog": "подтверждено Георгием. Из переписки: первое отделение серьёзное, второе развлекательное, звучал Schubert-Prokofiev. Walzer. Полный состав уточнить"
+ },
+ {
+  "date": "2026-12-13",
+  "title": "Duokonzert, Christophori",
+  "who": "дуэт",
+  "prog": "подтверждено Георгием. Из переписки: Tschaikowski-Gromov. Nussknacker; Prokofiev-Pletnev. Cinderella. Уточнить, что ещё в программе"
+ }
+];
+
+const MONTHS = ['сентябрь','октябрь','ноябрь','декабрь','январь','февраль','март','апрель','май','июнь','июль','август'];
+function seasonOf(iso) {
+  const [y, m] = iso.split('-').map(Number);
+  return m >= 9 ? y : y - 1;
+}
+function seasonPos(iso) {
+  const [y, m, d] = iso.split('-').map(Number);
+  const idx = m >= 9 ? m - 9 : m + 3;
+  return idx + (d - 1) / 31;
+}
+const groups = {};
+DATA.forEach(e => { (groups[seasonOf(e.date)] = groups[seasonOf(e.date)] || []).push(e); });
+
+const W = 1100, LEFT = 54, RIGHT = 24, TOP = 46, GAP = 11, H = TOP + GAP * 4 + 58;
+const host = document.getElementById('seasons');
+const panel = document.getElementById('panel');
+
+Object.keys(groups).sort().forEach(season => {
+  const items = groups[season].sort((a, b) => a.date.localeCompare(b.date));
+  const box = document.createElement('div');
+  box.className = 'season';
+  box.innerHTML = '<h2>Сезон ' + season + '/' + String(Number(season) + 1).slice(2) + '</h2>';
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+  const inner = W - LEFT - RIGHT;
+  let s = '';
+  for (let i = 0; i < 5; i++) {
+    const y = TOP + i * GAP;
+    s += '<line class="staff" x1="' + LEFT + '" y1="' + y + '" x2="' + (W - RIGHT) + '" y2="' + y + '"/>';
+  }
+  for (let m = 0; m <= 12; m++) {
+    const x = LEFT + inner * (m / 12);
+    s += '<line class="barline" x1="' + x + '" y1="' + TOP + '" x2="' + x + '" y2="' + (TOP + GAP * 4) + '"/>';
+    if (m < 12) s += '<text class="monthlabel" x="' + (x + 4) + '" y="' + (TOP - 10) + '">' + MONTHS[m].slice(0, 3) + '</text>';
+  }
+  items.forEach((e, i) => {
+    const x = LEFT + inner * (seasonPos(e.date) / 12);
+    const duo = /дуэт/i.test(e.who);
+    const y = duo ? TOP + GAP * 1 : TOP + GAP * 3;
+    const stemUp = !duo;
+    const d = e.date.split('-');
+    s += '<g class="note ' + (duo ? 'duo' : 'solo') + '" data-i="' + i + '">'
+      + '<ellipse class="head" cx="' + x + '" cy="' + y + '" rx="6.4" ry="4.8" transform="rotate(-18 ' + x + ' ' + y + ')"/>'
+      + '<line class="stem" x1="' + (x + (stemUp ? 6 : -6)) + '" y1="' + y + '" x2="' + (x + (stemUp ? 6 : -6)) + '" y2="' + (y + (stemUp ? -30 : 30)) + '"/>'
+      + '<text class="lbl" x="' + x + '" y="' + (TOP + GAP * 4 + 26) + '" text-anchor="middle">' + d[2] + '.' + d[1] + '</text>'
+      + '</g>';
+  });
+  svg.innerHTML = s;
+  box.appendChild(svg);
+  host.appendChild(box);
+  svg.querySelectorAll('.note').forEach(n => {
+    n.addEventListener('mouseenter', () => show(items[+n.dataset.i]));
+    n.addEventListener('click', () => show(items[+n.dataset.i]));
+  });
+});
+
+function show(e) {
+  const [y, m, d] = e.date.split('-');
+  panel.querySelector('.d').textContent = d + '.' + m + '.' + y + ' · ' + e.who;
+  panel.querySelector('.t').textContent = e.title;
+  panel.querySelector('.p').textContent = e.prog && e.prog !== '-' ? e.prog : 'Программа уточняется.';
+}
+</script>
+</body>
+</html>
