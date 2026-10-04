@@ -45,11 +45,12 @@
     letter-spacing: .06em;
   }
   .note { cursor: pointer; }
-  .note .head { fill: var(--accent); transition: transform .18s ease, fill .18s; transform-box: fill-box; transform-origin: center; }
+  .note .head { fill: var(--accent); transition: opacity .18s ease; }
   .note.duo .head { fill: var(--accent2); }
   .note .stem { stroke: var(--accent); stroke-width: 1.6; }
   .note.duo .stem { stroke: var(--accent2); }
-  .note:hover .head { transform: scale(1.35); }
+  .note:hover .head { stroke: var(--ink); stroke-width: 2; }
+  .note:hover .lbl { opacity: 1; font-weight: 700; }
   .note .lbl { fill: var(--ink); font: 400 11px -apple-system, BlinkMacSystemFont, sans-serif; opacity: .75; }
   .panel {
     margin-top: 1rem; background: var(--card); border: 1px solid var(--line);
@@ -264,7 +265,7 @@ Object.keys(groups).sort().forEach(season => {
     const stemUp = !duo;
     const d = e.date.split('-');
     s += '<g class="note ' + (duo ? 'duo' : 'solo') + '" data-i="' + i + '">'
-      + '<ellipse class="head" cx="' + x + '" cy="' + y + '" rx="6.4" ry="4.8" transform="rotate(-18 ' + x + ' ' + y + ')"/>'
+      + '<ellipse class="head" cx="' + x + '" cy="' + y + '" rx="6.4" ry="4.8"/>'
       + '<line class="stem" x1="' + (x + (stemUp ? 6 : -6)) + '" y1="' + y + '" x2="' + (x + (stemUp ? 6 : -6)) + '" y2="' + (y + (stemUp ? -30 : 30)) + '"/>'
       + '<text class="lbl" x="' + x + '" y="' + (TOP + GAP * 4 + 26) + '" text-anchor="middle">' + d[2] + '.' + d[1] + '</text>'
       + '</g>';
