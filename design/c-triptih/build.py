@@ -53,8 +53,14 @@ def main():
     hero = (f'<header class="cover"><div class="top"><h1 class="brand roman">{e(T.NAME)}</h1>'
             f'<nav aria-label="Разделы">{nav}</nav></div>'
             f'<div class="tri">{"".join(leaves)}'
-            f'<div class="name"><p class="slogan roman">{e(T.SLOGAN)}</p>'
-            f'<div class="q">{q(T.HERO_QUOTE[0])}<b>{e(T.HERO_QUOTE[1])}</b></div></div></div></header>')
+            f'</div></header>')
+
+    # ---------------- Миссия (под первым экраном)
+    paths = ''.join(f'<a class="path" href="#{a}"><h3 class="roman">{e(t)}</h3><p>{e(x)}</p></a>'
+                    for a, t, x in T.MISSION)
+    mission = (f'<section class="sec mission"><blockquote class="motto roman">«{e(T.SLOGAN)}»'
+               f'<cite>{e(T.NAME)}</cite></blockquote>'
+               f'<p class="big">{e(T.MISSION_LEAD)}</p><div class="paths">{paths}</div></section>')
 
     # ---------------- Музыкант
     halls = ''.join(f'<li><span>{e(a)}</span><span>{e(b)}</span></li>' for a, b in T.HALLS)
@@ -132,7 +138,7 @@ def main():
 
     page = TEMPLATE.replace("{{TITLE}}", e(T.TITLE)).replace("{{DESC}}", e(T.DESC)) \
         .replace("{{FONTS}}", FONTS_REL) \
-        .replace("{{BODY}}", hero + "<main>" + muz + kou + pro + lenta + kon + "</main>")
+        .replace("{{BODY}}", hero + "<main>" + mission + muz + kou + pro + lenta + kon + "</main>")
     with open(os.path.join(HERE, "index.html"), "w", encoding="utf-8") as f:
         f.write(page)
     print(f"собрано: index.html ({len(page)/1024:.0f} КБ), событий {len(ev)}")
@@ -174,7 +180,7 @@ a{color:inherit}
 .tri:hover .leaf{flex-grow:.7}
 .tri .leaf:hover{flex-grow:2.2}
 .leaf:hover img,.leaf:focus-visible img{filter:grayscale(0) saturate(1.08) brightness(.97);transform:scale(1.03)}
-.cap{position:absolute;z-index:2;left:clamp(16px,2.4vw,36px);right:clamp(16px,2.4vw,36px);bottom:clamp(130px,20vh,200px)}
+.cap{position:absolute;z-index:2;left:clamp(16px,2.4vw,36px);right:clamp(16px,2.4vw,36px);bottom:clamp(36px,8vh,80px)}
 .cap .r{font-size:clamp(26px,2.8vw,44px);line-height:1}
 .cap .s{margin-top:10px;font-size:16px;color:var(--sage);max-width:22em;opacity:0;transform:translateY(8px);transition:.5s}
 .leaf:hover .s,.leaf:focus-visible .s{opacity:1;transform:none}
@@ -185,7 +191,15 @@ a{color:inherit}
 .top a{text-decoration:none;font-size:16px;color:var(--chalk);opacity:.85}
 .top a:hover{opacity:1;color:var(--sage)}
 .name{position:absolute;z-index:3;left:0;right:0;bottom:0;padding:0 clamp(16px,2.4vw,36px) clamp(22px,4vh,40px);pointer-events:none;display:flex;justify-content:space-between;align-items:flex-end;gap:20px}
-.slogan{margin:0;font-size:clamp(34px,5.6vw,96px);line-height:.95;letter-spacing:.05em;max-width:12.5em}
+.mission{padding-top:clamp(90px,12vw,180px)}
+.motto{margin:0;font-size:clamp(40px,6.4vw,112px);line-height:.98;letter-spacing:.04em;max-width:11em}
+.motto cite{display:block;margin-top:24px;font:300 17px/1.3 'Ysabeau Office';letter-spacing:.04em;text-transform:none;color:var(--sage)}
+.mission .big{max-width:30em;margin:clamp(40px,6vw,80px) 0 0}
+.paths{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(20px,3vw,48px);margin-top:clamp(36px,5vw,64px)}
+.path{display:block;text-decoration:none;border-top:1px solid var(--sage);padding-top:20px}
+.path h3{font-size:clamp(22px,2vw,30px);line-height:1.1;margin:0 0 12px}
+.path p{margin:0;color:var(--chalk);opacity:.85}
+.path:hover h3{color:var(--sage)}
 .name .q{max-width:24em;font-style:italic;font-size:clamp(15px,1.15vw,18px);text-align:right}
 .name .q b{display:block;font-style:normal;font-weight:600;color:var(--sage);margin-top:6px;font-size:14px;letter-spacing:.04em}
 
@@ -289,7 +303,7 @@ footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px 30px;p
   .top nav{display:none}
   .name{position:relative;background:var(--night);flex-direction:column;align-items:flex-start;padding-top:28px}
   .name .q{text-align:left}
-  .cols,.voices,.trips{grid-template-columns:1fr}
+  .cols,.voices,.trips,.paths{grid-template-columns:1fr}
   .press{columns:1}
   .akadem li{grid-template-columns:1fr;gap:2px}
   .band{min-height:70svh}.band.short{min-height:50svh}
