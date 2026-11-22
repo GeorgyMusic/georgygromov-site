@@ -59,6 +59,12 @@ def main():
     nxt = (f'<div class="next"><div class="lbl">Ближайший концерт</div>'
            f'<div class="d roman">{e(d)}</div><div class="w">{e(who)}<br>{e(prog)}</div>'
            f'<div class="p">{e(where)}</div></div>')
+    def voice_grid(items):
+        if not items:
+            return ''
+        return '<div class="voices">' + ''.join(
+            f'<div><blockquote>{q(t)}</blockquote><cite>{e(n)}<span>{e(r)}</span></cite></div>'
+            for t, n, r in items) + '</div>'
     voices = ''.join(f'<div><blockquote>{q(t)}</blockquote><cite>{e(n)}<span>{e(r)}</span></cite></div>'
                      for t, n, r in T.VOICES_MUZ)
     press = ''.join(f'<p>{q(t)}</p>' for t in T.PRESS)
@@ -68,7 +74,10 @@ def main():
            f'</div><div><ul class="halls">{halls}</ul>{nxt}</div></div></section>'
            + band(*T.BAND_MUZ[:2], *T.BAND_MUZ[2:]) +
            f'<div class="voices">{voices}</div>'
-           f'<div class="press"><div class="lbl">Пресса</div>{press}<small>{e(T.PRESS_SRC)}</small></div>')
+           f'<div class="press"><div class="lbl">Пресса</div>{press}<small>{e(T.PRESS_SRC)}</small></div>'
+           f'<div class="comp"><h3 class="roman">{e(T.COMP_H)}</h3><div class="cols"><div>'
+           + ''.join(f'<p>{e(p)}</p>' for p in T.COMP) +
+           f'</div><blockquote>{e(T.COMP_QUOTE[0])}<cite>{e(T.COMP_QUOTE[1])}</cite></blockquote></div></div>')
 
     # ---------------- Коуч
     formats = ''.join(f'<li><b>{e(a)}</b><span>{e(b)}</span></li>' for a, b in T.FORMATS)
@@ -78,7 +87,8 @@ def main():
            + ''.join(f'<p>{e(p)}</p>' for p in T.KOU) +
            f'</div><div><div class="lbl">Форматы</div><ul class="formats">{formats}</ul>'
            f'<div class="lbl">Клиенты</div><div class="clients">{clients}</div></div></div></section>'
-           + band(T.BAND_KOU[0], T.BAND_KOU[1], "", "", "", "short"))
+           + band(*T.BAND_KOU, "" if T.BAND_KOU[2] else "short")
+           + voice_grid(T.VOICES_KOU))
 
     # ---------------- Просветитель
     ak = ''.join(f'<li><span class="when">{e(a)}</span><span class="what">{e(c)}<i>{e(b)}</i></span></li>'
@@ -86,8 +96,12 @@ def main():
     pro = (f'<section class="sec" id="prosvetitel">{section_head("prosvetitel", T.PRO_EYEBROW, "Просветитель")}'
            f'<div class="cols"><div><p class="big">{e(T.PRO_LEAD)}</p>'
            + ''.join(f'<p>{e(p)}</p>' for p in T.PRO) +
-           f'</div><div><div class="lbl">Мастер-классы и выступления</div><ul class="akadem">{ak}</ul></div></div>'
-           f'<div class="trips"><figure><img src="foto/p2.jpg" alt="" loading="lazy"></figure>'
+           f'</div><div><div class="lbl">Курсы</div><ul class="formats">'
+           + ''.join(f'<li><b>{e(a)}</b><span>{e(b)}</span></li>' for a, b in T.COURSES) +
+           f'</ul><div class="lbl">Мастер-классы и выступления</div><ul class="akadem">{ak}</ul></div></div></section>'
+           + band(*T.BAND_PRO, "" if T.BAND_PRO[2] else "short")
+           + voice_grid(T.VOICES_PRO) +
+           f'<section class="sec trips-sec"><div class="trips"><figure><img src="foto/p2.jpg" alt="" loading="lazy"></figure>'
            f'<div><h3 class="roman">{e(T.TRIPS_H)}</h3><p>{e(T.TRIPS)}</p>'
            f'<a class="more-link" href="{e(T.TRIPS_LINK[1])}">{e(T.TRIPS_LINK[0])} →</a></div></div></section>')
 
@@ -205,7 +219,14 @@ a{color:inherit}
 .press p{margin:0 0 14px;font-style:italic;break-inside:avoid}
 .press small{color:var(--dim);font-size:14px;display:block}
 
-.trips{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(24px,5vw,90px);margin-top:clamp(70px,9vw,130px);align-items:center}
+.trips{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(24px,5vw,90px);align-items:center}
+.comp{margin:clamp(70px,9vw,130px) clamp(16px,5vw,80px) 0;padding-top:clamp(40px,5vw,70px);border-top:1px solid var(--line)}
+.comp h3{font-size:clamp(30px,3.4vw,54px);line-height:1;margin:0}
+.comp .cols{margin-top:clamp(20px,3vw,40px);align-items:center}
+.comp blockquote{margin:0;font-family:'Forum',serif;font-size:clamp(34px,4vw,64px);line-height:1.05;color:var(--sage)}
+.comp cite{display:block;margin-top:16px;font:300 16px/1.4 'Ysabeau Office';color:var(--dim)}
+.trips-sec{padding-top:clamp(70px,9vw,130px)}
+.voices + .sec{padding-top:clamp(90px,12vw,170px)}
 .trips figure{margin:0}
 .trips img{width:100%;max-height:80svh;object-fit:cover;filter:saturate(.7)}
 .trips h3{font-size:clamp(28px,3vw,48px);line-height:1.05;margin:0 0 20px}
