@@ -48,10 +48,12 @@ def main():
             f'style="object-position:{pos}">{w}'
             f'<div class="cap"><div class="r roman">{e(title)}</div><div class="s">{e(sub)}</div></div></a>')
     nav = ''.join(f'<a href="#{a}">{e(t)}</a>' for a, t in T.NAV)
-    hero = (f'<header class="tri">{"".join(leaves)}'
-            f'<nav class="top" aria-label="Разделы">{nav}</nav>'
+    # Меню вынесено из .tri: иначе наведение на меню сужало все створки сразу.
+    # Имя лежит внутри .tri с pointer-events:none, наведение проходит сквозь него на створку.
+    hero = (f'<header class="cover"><nav class="top" aria-label="Разделы">{nav}</nav>'
+            f'<div class="tri">{"".join(leaves)}'
             f'<div class="name"><h1 class="roman">{e(T.NAME)}</h1>'
-            f'<div class="q">{q(T.HERO_QUOTE[0])}<b>{e(T.HERO_QUOTE[1])}</b></div></div></header>')
+            f'<div class="q">{q(T.HERO_QUOTE[0])}<b>{e(T.HERO_QUOTE[1])}</b></div></div></div></header>')
 
     # ---------------- Музыкант
     halls = ''.join(f'<li><span>{e(a)}</span><span>{e(b)}</span></li>' for a, b in T.HALLS)
@@ -160,14 +162,15 @@ a{color:inherit}
 .lbl{color:var(--sage);font-size:15px;margin:0 0 12px}
 
 /* ---------- первый экран ---------- */
+.cover{position:relative}
 .tri{position:relative;height:100svh;min-height:600px;display:flex}
 .leaf{position:relative;flex:1;overflow:hidden;transition:flex-grow .7s cubic-bezier(.2,.7,.2,1);text-decoration:none;color:var(--chalk)}
-.leaf img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(.55) brightness(.78);transition:filter .7s,transform 1.2s}
+.leaf img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:grayscale(1) brightness(.72);transition:filter .8s,transform 1.2s}
 .leaf::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(13,15,14,.94) 0%,rgba(13,15,14,0) 55%),linear-gradient(180deg,rgba(13,15,14,.55) 0%,rgba(13,15,14,0) 18%)}
 .leaf+.leaf{border-left:1px solid rgba(236,234,227,.25)}
-.tri:has(.leaf:hover) .leaf{flex-grow:.7}
+.tri:hover .leaf{flex-grow:.7}
 .tri .leaf:hover{flex-grow:2.2}
-.leaf:hover img{filter:saturate(1) brightness(.95);transform:scale(1.03)}
+.leaf:hover img,.leaf:focus-visible img{filter:grayscale(0) saturate(1.08) brightness(.97);transform:scale(1.03)}
 .cap{position:absolute;z-index:2;left:clamp(16px,2.4vw,36px);right:clamp(16px,2.4vw,36px);bottom:clamp(130px,20vh,200px)}
 .cap .r{font-size:clamp(26px,2.8vw,44px);line-height:1}
 .cap .s{margin-top:10px;font-size:16px;color:var(--sage);max-width:22em;opacity:0;transform:translateY(8px);transition:.5s}
@@ -270,7 +273,7 @@ footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px 30px;p
   .tri{flex-direction:column;height:auto;min-height:0}
   .leaf{height:46svh;flex:none}
   .leaf+.leaf{border-left:0;border-top:1px solid rgba(236,234,227,.25)}
-  .tri:has(.leaf:hover) .leaf,.tri .leaf:hover{flex-grow:0}
+  .tri:hover .leaf,.tri .leaf:hover{flex-grow:0}
   .cap{bottom:20px}.cap .s{opacity:1;transform:none}
   .wait{top:14px}
   .top{display:none}
@@ -281,6 +284,7 @@ footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px 30px;p
   .akadem li{grid-template-columns:1fr;gap:2px}
   .band{min-height:70svh}.band.short{min-height:50svh}
 }
+@media (hover:none){.leaf img{filter:saturate(.9) brightness(.85)}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto}}
 </style>
 </head>
