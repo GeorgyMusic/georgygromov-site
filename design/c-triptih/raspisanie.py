@@ -219,8 +219,9 @@ JS = r"""
     root.querySelectorAll('.sc-scroll').forEach(function(sc){
       sc.addEventListener('scroll',hide,{passive:true});
       if(sc.classList.contains('long')){
-        var target=sc.querySelector('.sc-note.is-future');
-        if(target){ var b=target.getBBox?target.getBBox():null; sc.scrollLeft=Math.max(0,(b?b.x:0)-sc.clientWidth*0.35); }
+        var target=sc.querySelector('.sc-note.is-future .sc-hov');
+        if(target){ var tx=target.getBoundingClientRect().left-sc.getBoundingClientRect().left+sc.scrollLeft;
+          sc.scrollLeft=Math.max(0,tx-sc.clientWidth*0.6); }
         var down=false,sx=0,sl=0;
         sc.addEventListener('mousedown',function(ev){down=true;sx=ev.pageX;sl=sc.scrollLeft;});
         window.addEventListener('mouseup',function(){down=false;});
