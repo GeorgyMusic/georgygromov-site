@@ -196,7 +196,8 @@ JS = r"""
         tip.innerHTML='<div class="k"><i style="background:var(--k-'+k+')"></i>'+esc(g.dataset.when)+' · '+esc(g.dataset.kind)+fut+'</div>'+
           '<div class="t">'+esc(what)+'</div>'+(where?'<div class="p">'+esc(where)+'</div>':'');
       }
-      var wr=root.getBoundingClientRect(), r=g.querySelector('.sc-head').getBoundingClientRect();
+      // кольцо sc-hov точно описывает головку; рамка символа шрифта Bravura намного выше
+      var wr=root.getBoundingClientRect(), r=g.querySelector('.sc-hov').getBoundingClientRect();
       var x=r.left+r.width/2-wr.left, tw=tip.offsetWidth, th=tip.offsetHeight;
       var left=Math.max(4,Math.min(x-tw/2, wr.width-tw-4));
       var top=r.top-wr.top-th-16, below=false;
