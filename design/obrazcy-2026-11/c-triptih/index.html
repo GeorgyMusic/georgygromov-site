@@ -22,7 +22,7 @@ img{display:block;max-width:100%}
 .leaf img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(.55) brightness(.78);transition:filter .7s,transform 1.2s}
 .leaf::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(13,15,14,.92) 0%,rgba(13,15,14,0) 55%)}
 .leaf+.leaf{border-left:1px solid rgba(236,234,227,.25)}
-.tri:hover .leaf{flex-grow:.7}
+.tri:has(.leaf:hover) .leaf{flex-grow:.7}
 .tri .leaf:hover{flex-grow:2.2}
 .leaf:hover img{filter:saturate(1) brightness(.95);transform:scale(1.03)}
 .cap{position:absolute;z-index:2;left:clamp(16px,2.4vw,36px);right:clamp(16px,2.4vw,36px);bottom:clamp(120px,19vh,190px)}
@@ -68,7 +68,7 @@ img{display:block;max-width:100%}
   .cap .s{opacity:1;transform:none}
   .name{position:relative;background:var(--night);flex-direction:column;align-items:flex-start;padding-top:28px}
   .name .q{text-align:left}
-  .tri:hover .leaf,.tri .leaf:hover{flex-grow:0}
+  .tri:has(.leaf:hover) .leaf,.tri .leaf:hover{flex-grow:0}
   .cols,.more{grid-template-columns:1fr}
 }
 </style>

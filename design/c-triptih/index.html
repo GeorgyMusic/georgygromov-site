@@ -30,7 +30,7 @@ a{color:inherit}
 .leaf img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(.55) brightness(.78);transition:filter .7s,transform 1.2s}
 .leaf::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(13,15,14,.94) 0%,rgba(13,15,14,0) 55%),linear-gradient(180deg,rgba(13,15,14,.55) 0%,rgba(13,15,14,0) 18%)}
 .leaf+.leaf{border-left:1px solid rgba(236,234,227,.25)}
-.tri:hover .leaf{flex-grow:.7}
+.tri:has(.leaf:hover) .leaf{flex-grow:.7}
 .tri .leaf:hover{flex-grow:2.2}
 .leaf:hover img{filter:saturate(1) brightness(.95);transform:scale(1.03)}
 .cap{position:absolute;z-index:2;left:clamp(16px,2.4vw,36px);right:clamp(16px,2.4vw,36px);bottom:clamp(130px,20vh,200px)}
@@ -128,7 +128,7 @@ footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px 30px;p
   .tri{flex-direction:column;height:auto;min-height:0}
   .leaf{height:46svh;flex:none}
   .leaf+.leaf{border-left:0;border-top:1px solid rgba(236,234,227,.25)}
-  .tri:hover .leaf,.tri .leaf:hover{flex-grow:0}
+  .tri:has(.leaf:hover) .leaf,.tri .leaf:hover{flex-grow:0}
   .cap{bottom:20px}.cap .s{opacity:1;transform:none}
   .wait{top:14px}
   .top{display:none}
