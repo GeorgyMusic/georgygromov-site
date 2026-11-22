@@ -50,9 +50,10 @@ def main():
     nav = ''.join(f'<a href="#{a}">{e(t)}</a>' for a, t in T.NAV)
     # Меню вынесено из .tri: иначе наведение на меню сужало все створки сразу.
     # Имя лежит внутри .tri с pointer-events:none, наведение проходит сквозь него на створку.
-    hero = (f'<header class="cover"><nav class="top" aria-label="Разделы">{nav}</nav>'
+    hero = (f'<header class="cover"><div class="top"><h1 class="brand roman">{e(T.NAME)}</h1>'
+            f'<nav aria-label="Разделы">{nav}</nav></div>'
             f'<div class="tri">{"".join(leaves)}'
-            f'<div class="name"><h1 class="roman">{e(T.NAME)}</h1>'
+            f'<div class="name"><p class="slogan roman">{e(T.SLOGAN)}</p>'
             f'<div class="q">{q(T.HERO_QUOTE[0])}<b>{e(T.HERO_QUOTE[1])}</b></div></div></div></header>')
 
     # ---------------- Музыкант
@@ -176,11 +177,13 @@ a{color:inherit}
 .cap .s{margin-top:10px;font-size:16px;color:var(--sage);max-width:22em;opacity:0;transform:translateY(8px);transition:.5s}
 .leaf:hover .s,.leaf:focus-visible .s{opacity:1;transform:none}
 .wait{position:absolute;z-index:2;top:64px;left:14px;background:#fff3b0;color:#3a3200;font:12px/1.3 system-ui;padding:4px 8px}
-.top{position:absolute;z-index:4;top:0;right:0;left:0;display:flex;justify-content:flex-end;gap:clamp(16px,2.4vw,34px);padding:20px clamp(16px,2.4vw,36px)}
+.top{position:absolute;z-index:4;top:0;right:0;left:0;display:flex;justify-content:space-between;align-items:baseline;gap:20px;padding:20px clamp(16px,2.4vw,36px)}
+.top nav{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:clamp(16px,2.4vw,34px)}
+.brand{margin:0;font-size:clamp(18px,1.6vw,24px);line-height:1;letter-spacing:.14em;color:var(--chalk)}
 .top a{text-decoration:none;font-size:16px;color:var(--chalk);opacity:.85}
 .top a:hover{opacity:1;color:var(--sage)}
 .name{position:absolute;z-index:3;left:0;right:0;bottom:0;padding:0 clamp(16px,2.4vw,36px) clamp(22px,4vh,40px);pointer-events:none;display:flex;justify-content:space-between;align-items:flex-end;gap:20px}
-.name h1{margin:0;font-size:clamp(40px,7.4vw,124px);line-height:.9;letter-spacing:.06em}
+.slogan{margin:0;font-size:clamp(34px,5.6vw,96px);line-height:.95;letter-spacing:.05em;max-width:12.5em}
 .name .q{max-width:24em;font-style:italic;font-size:clamp(15px,1.15vw,18px);text-align:right}
 .name .q b{display:block;font-style:normal;font-weight:600;color:var(--sage);margin-top:6px;font-size:14px;letter-spacing:.04em}
 
@@ -276,7 +279,8 @@ footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px 30px;p
   .tri:hover .leaf,.tri .leaf:hover{flex-grow:0}
   .cap{bottom:20px}.cap .s{opacity:1;transform:none}
   .wait{top:14px}
-  .top{display:none}
+  .top{position:absolute}
+  .top nav{display:none}
   .name{position:relative;background:var(--night);flex-direction:column;align-items:flex-start;padding-top:28px}
   .name .q{text-align:left}
   .cols,.voices,.trips{grid-template-columns:1fr}
