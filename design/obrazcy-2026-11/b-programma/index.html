@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Георгий Громов — образец B «Программа вечера»</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#F2ECE1;--ink:#1B1714;--wine:#7B1E2B;--soft:#6E655C}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 19px/1.6 'Old Standard TT',Georgia,serif}
+img{display:block;max-width:100%}
+.sc{font-variant:small-caps;letter-spacing:.04em}
+
+/* ---------- первый экран: обложка программы ---------- */
+.cover{position:relative;min-height:100svh;display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,38%);background:var(--ink)}
+.cover .ph{position:relative;overflow:hidden}
+.cover .ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:40% 30%}
+.cover .side{background:var(--paper);display:flex;flex-direction:column;justify-content:space-between;padding:clamp(26px,4vw,56px) clamp(20px,3.4vw,52px)}
+.house{display:flex;justify-content:space-between;font-size:15px;color:var(--soft)}
+.title h1{margin:0;font-weight:400;font-size:clamp(52px,6.2vw,104px);line-height:.95;letter-spacing:-.01em}
+.title h1 i{display:block;color:var(--wine)}
+.title p{margin:22px 0 0;font-size:clamp(18px,1.5vw,22px);font-style:italic;max-width:22em}
+.contents{border-top:2px solid var(--ink);padding-top:14px}
+.contents a{display:grid;grid-template-columns:2.2em 1fr auto;align-items:baseline;gap:10px;color:var(--ink);text-decoration:none;padding:7px 0;font-size:clamp(18px,1.4vw,21px)}
+.contents a .dots{border-bottom:1px dotted var(--soft);transform:translateY(-5px)}
+.contents a:hover{color:var(--wine)}
+.contents em{color:var(--wine);font-style:normal}
+.contents .lbl{display:flex;gap:10px}
+.contents .lbl span:first-child{white-space:nowrap}
+
+/* ---------- раздел «Музыка»: разворот ---------- */
+.spread{padding:clamp(60px,9vw,140px) 0 clamp(40px,6vw,90px)}
+.head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 clamp(24px,4vw,64px);padding:0 clamp(16px,5vw,80px);align-items:end}
+.head .no{font-size:clamp(120px,17vw,260px);line-height:.8;color:var(--wine);font-style:italic}
+.head h2{margin:0 0 .2em;font-size:clamp(46px,5.4vw,86px);font-weight:400;line-height:1}
+.head .kicker{font-size:17px;color:var(--soft)}
+
+.body{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:clamp(24px,4vw,64px);margin-top:clamp(36px,5vw,70px);padding-right:clamp(16px,5vw,80px)}
+.body figure{margin:0}
+.body figure img{width:100%;height:auto;max-height:92svh;object-fit:cover}
+.body figcaption{padding:10px clamp(16px,5vw,80px) 0;font-size:15px;font-style:italic;color:var(--soft)}
+.col p{margin:0 0 1em;hyphens:auto}
+.col p:first-child::first-letter{float:left;font-size:4.6em;line-height:.82;padding:.06em .08em 0 0;color:var(--wine)}
+.col .fn{font-size:15px;color:var(--soft);border-top:1px solid #cbbfae;padding-top:12px;margin-top:28px}
+sup{color:var(--wine);font-size:.6em}
+
+.pull{margin:clamp(60px,8vw,120px) clamp(16px,5vw,80px) 0;display:grid;grid-template-columns:minmax(0,2fr) minmax(0,10fr);gap:clamp(12px,2vw,30px)}
+.pull .mk{font-size:clamp(140px,16vw,260px);line-height:.7;color:var(--wine)}
+.pull blockquote{margin:0;font-size:clamp(30px,3.8vw,58px);line-height:1.12;font-style:italic}
+.pull cite{display:block;margin-top:22px;font-style:normal;font-size:19px}
+.pull cite b{font-weight:400}
+.pull cite span{color:var(--soft)}
+
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,4vw,64px);margin:clamp(50px,7vw,100px) clamp(16px,5vw,80px) 0;border-top:2px solid var(--ink);padding-top:30px}
+.pair blockquote{margin:0;font-size:clamp(21px,1.8vw,27px);line-height:1.35}
+.pair cite{display:block;margin-top:16px;font-style:normal;font-size:17px}
+.pair cite span{color:var(--soft)}
+
+.note{background:#fff3b0;color:#3a3200;font:14px/1.4 system-ui,sans-serif;padding:10px 14px;margin:0}
+
+@media (max-width:860px){
+  .cover{grid-template-columns:1fr;grid-template-rows:62svh auto}
+  .head,.body,.pair,.pull{grid-template-columns:1fr}
+  .body{padding-right:0}
+  .col{padding:0 16px}
+  .head .no{font-size:120px}
+  .pull .mk{font-size:120px;line-height:.6}
+}
+</style>
+</head>
+<body>
+<p class="note">Образец B «Программа вечера». Только первый экран и раздел «Музыка». Фото за роялем и с конференций пока нет, они встанут после присылки.</p>
+
+<header class="cover">
+  <div class="ph"><img src="../foto/h2.jpg" alt="Георгий Громов за дирижёрским пультом"></div>
+  <div class="side">
+    <div class="house"><span>Берлин</span><span>сезон 2026/27</span></div>
+    <div class="title">
+      <h1>Георгий<i>Громов</i></h1>
+      <p>Пианист, дирижёр, коуч PCC ICF. Концерты, лекции и мастер-классы на пяти языках.</p>
+    </div>
+    <nav class="contents" aria-label="Разделы">
+      <a href="#muzyka"><em>I</em><span class="dots"></span><span>Музыка</span></a>
+      <a href="#"><em>II</em><span class="dots"></span><span>Лидерство</span></a>
+      <a href="#"><em>III</em><span class="dots"></span><span>Как слушать музыку</span></a>
+      <a href="#"><em>IV</em><span class="dots"></span><span>Поездки</span></a>
+      <a href="#"><em>V</em><span class="dots"></span><span>Афиша и контакт</span></a>
+    </nav>
+  </div>
+</header>
+
+<section class="spread" id="muzyka">
+  <div class="head">
+    <div class="no">I</div>
+    <div><div class="kicker sc">фортепиано и дирижирование</div><h2>Музыка</h2></div>
+  </div>
+
+  <div class="body">
+    <figure>
+      <img src="../foto/p3.jpg" alt="Георгий Громов дирижирует, концерт в соборе">
+      <figcaption>За пультом</figcaption>
+    </figure>
+    <div class="col">
+      <p>Георгий Громов выступал в Тонхалле Цюриха, Большом зале Московской консерватории, Seoul Arts Centre и Концертхаусе Берлина, на фестивалях в Вербье и Klavier-Festival Ruhr. Играл с оркестром «Новая Россия» Юрия Башмета, Литовским камерным оркестром под управлением Саулюса Сондецкиса, Цюрихским камерным оркестром.</p>
+      <p>Его репертуар держится на классике и романтизме. Все 32 сонаты Бетховена и все его концерты, все 27 концертов Моцарта, все концерты Рахманинова. Больше 80 сольных программ и больше 50 концертов с оркестром.</p>
+      <p>Двенадцать международных премий, среди них Prix d'Oslo<sup>1</sup> и Гран-при в Сеуле. Московская консерватория, класс Элисо Вирсаладзе; Берлинский университет искусств, Клаус Хельвиг. В 2018–2020 годах художественный руководитель и главный дирижёр Оренбургской филармонии.</p>
+      <div class="fn"><sup>1</sup> Конкурс в Осло: Гран-при, премия EPTA, премия имени С. Франка и приз публики.</div>
+    </div>
+  </div>
+
+  <div class="pull">
+    <div class="mk">«</div>
+    <div>
+      <blockquote>Его исполнение всегда показывает собственное отношение к музыке, основанное на глубокой эрудиции, чуткости и поэзии.</blockquote>
+      <cite><b>Николай Луганский</b> <span>· победитель Конкурса имени Чайковского</span></cite>
+    </div>
+  </div>
+
+  <div class="pair">
+    <div>
+      <blockquote>«Меня глубоко впечатлили сильная музыкальность и искренность пианизма Георгия. За этим талантом стоит следить».</blockquote>
+      <cite>Барри Дуглас <span>· победитель Конкурса имени Чайковского</span></cite>
+    </div>
+    <div>
+      <blockquote>«Один из самых одарённых молодых российских пианистов. Меня лично очень впечатляет его глубокий, многогранный талант».</blockquote>
+      <cite>Элисо Вирсаладзе <span>· профессор Московской консерватории</span></cite>
+    </div>
+  </div>
+
+  <div class="pair">
+    <div>
+      <blockquote>«Громов играет Бетховена так, как его и нужно играть: сильно, со страстью, но прежде всего в настоящем бетховенском духе».</blockquote>
+      <cite>livekritik.de <span>· о «Буре», март 2012</span></cite>
+    </div>
+    <div>
+      <blockquote>«Блестящий технически, безупречный музыкально, с глубоким и подлинным пониманием исполняемой музыки».</blockquote>
+      <cite>livekritik.de</cite>
+    </div>
+  </div>
+</section>
+</body>
+</html>
