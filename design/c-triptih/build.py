@@ -46,7 +46,8 @@ def main():
         leaves.append(
             f'<a class="leaf" href="#{anchor}"><img src="foto/{photo}.jpg" alt="{e(T.NAME)}: {e(title.lower())}" '
             f'style="object-position:{pos}">{w}'
-            f'<div class="cap"><div class="r roman">{e(title)}</div><div class="s">{e(sub)}</div></div></a>')
+            f'<div class="cap"><div class="r roman">{e(title)}</div><div class="s">'
+            + '<br>'.join(e(x) for x in sub.split('\n')) + '</div></div></a>')
     nav = ''.join(f'<a href="#{a}">{e(t)}</a>' for a, t in T.NAV)
     # Меню вынесено из .tri: иначе наведение на меню сужало все створки сразу.
     # Имя лежит внутри .tri с pointer-events:none, наведение проходит сквозь него на створку.
@@ -185,7 +186,7 @@ a{color:inherit}
 .leaf:hover img,.leaf:focus-visible img{filter:grayscale(0) saturate(1.08) brightness(.97);transform:scale(1.03)}
 .cap{position:absolute;z-index:2;left:clamp(16px,2.4vw,36px);right:clamp(16px,2.4vw,36px);bottom:clamp(36px,8vh,80px)}
 .cap .r{font-size:clamp(26px,2.8vw,44px);line-height:1}
-.cap .s{margin-top:10px;font-size:16px;color:var(--sage);max-width:22em;opacity:0;transform:translateY(8px);transition:.5s}
+.cap .s{margin-top:12px;font-size:16px;line-height:1.5;color:var(--sage);max-width:28em;opacity:0;transform:translateY(8px);transition:.5s}
 .leaf:hover .s,.leaf:focus-visible .s{opacity:1;transform:none}
 .wait{position:absolute;z-index:2;top:64px;left:14px;background:#fff3b0;color:#3a3200;font:12px/1.3 system-ui;padding:4px 8px}
 .top{position:absolute;z-index:4;top:0;right:0;left:0;display:flex;justify-content:space-between;align-items:baseline;gap:20px;padding:20px clamp(16px,2.4vw,36px)}
