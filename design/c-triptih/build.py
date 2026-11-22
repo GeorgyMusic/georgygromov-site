@@ -56,8 +56,10 @@ def main():
             f'</div></header>')
 
     # ---------------- Миссия (под первым экраном)
-    paths = ''.join(f'<a class="path" href="#{a}"><h3 class="roman">{e(t)}</h3><p>{e(x)}</p></a>'
-                    for a, t, x in T.MISSION)
+    paths = ''.join(f'<div class="path"><h3 class="roman">{e(t)}</h3>'
+                    + ''.join(f'<p>{e(p)}</p>' for p in ps) +
+                    f'<a class="more-link" href="#{a}">Подробнее →</a></div>'
+                    for a, t, ps in T.MISSION)
     mission = (f'<section class="sec mission"><blockquote class="motto roman">«{e(T.SLOGAN)}»'
                f'<cite>{e(T.NAME)}</cite></blockquote>'
                + ''.join(f'<p class="big">{e(p)}</p>' for p in T.MISSION_LEAD) +
@@ -198,10 +200,10 @@ a{color:inherit}
 .mission .big{max-width:30em;margin:clamp(40px,6vw,80px) 0 0}
 .mission .big + .big{margin-top:.8em}
 .paths{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(20px,3vw,48px);margin-top:clamp(36px,5vw,64px)}
-.path{display:block;text-decoration:none;border-top:1px solid var(--sage);padding-top:20px}
-.path h3{font-size:clamp(22px,2vw,30px);line-height:1.1;margin:0 0 12px}
-.path p{margin:0;color:var(--chalk);opacity:.85}
-.path:hover h3{color:var(--sage)}
+.path{display:flex;flex-direction:column;border-top:1px solid var(--sage);padding-top:20px}
+.path h3{font-size:clamp(22px,2vw,30px);line-height:1.1;margin:0 0 14px}
+.path p{margin:0 0 .9em;color:var(--chalk);opacity:.88}
+.path .more-link{margin-top:auto;align-self:flex-start}
 .name .q{max-width:24em;font-style:italic;font-size:clamp(15px,1.15vw,18px);text-align:right}
 .name .q b{display:block;font-style:normal;font-weight:600;color:var(--sage);margin-top:6px;font-size:14px;letter-spacing:.04em}
 
