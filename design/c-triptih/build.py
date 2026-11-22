@@ -60,7 +60,8 @@ def main():
                     for a, t, x in T.MISSION)
     mission = (f'<section class="sec mission"><blockquote class="motto roman">«{e(T.SLOGAN)}»'
                f'<cite>{e(T.NAME)}</cite></blockquote>'
-               f'<p class="big">{e(T.MISSION_LEAD)}</p><div class="paths">{paths}</div></section>')
+               + ''.join(f'<p class="big">{e(p)}</p>' for p in T.MISSION_LEAD) +
+               f'<div class="paths">{paths}</div></section>')
 
     # ---------------- Музыкант
     halls = ''.join(f'<li><span>{e(a)}</span><span>{e(b)}</span></li>' for a, b in T.HALLS)
@@ -195,6 +196,7 @@ a{color:inherit}
 .motto{margin:0;font-size:clamp(40px,6.4vw,112px);line-height:.98;letter-spacing:.04em;max-width:11em}
 .motto cite{display:block;margin-top:24px;font:300 17px/1.3 'Ysabeau Office';letter-spacing:.04em;text-transform:none;color:var(--sage)}
 .mission .big{max-width:30em;margin:clamp(40px,6vw,80px) 0 0}
+.mission .big + .big{margin-top:.8em}
 .paths{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(20px,3vw,48px);margin-top:clamp(36px,5vw,64px)}
 .path{display:block;text-decoration:none;border-top:1px solid var(--sage);padding-top:20px}
 .path h3{font-size:clamp(22px,2vw,30px);line-height:1.1;margin:0 0 12px}
