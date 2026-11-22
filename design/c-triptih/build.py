@@ -11,6 +11,8 @@ import os, html
 import text as T
 import timeline as TL
 import score
+import raspisanie as R
+R_DEFAULT = "a"   # вариант расписания на главной (index.html); остальные в raspisanie-<x>.html
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TODAY = "2026-11-22"
@@ -38,7 +40,7 @@ def band(photo, pos, quote, who, role, cls=""):
             f'style="object-position:{pos}">{cap}</figure>')
 
 
-def main():
+def main(variant=R_DEFAULT):
     # ---------------- первый экран
     leaves = []
     for anchor, title, sub, photo, pos, wait in T.LEAVES:
@@ -82,8 +84,8 @@ def main():
         f'allowfullscreen></iframe></div><figcaption><b>{e(t)}</b><span>{e(n)}</span></figcaption></figure>'
         for v, t, n in T.VIDEOS)
     d, where, who, prog = T.NEXT
-    nxt = (f'<div class="next"><div class="lbl">Ближайший концерт</div>'
-           f'<div class="d roman">{e(d)}</div><div class="w">{e(who)}<br>{e(prog)}</div>'
+    nxt = (f'<div class="next"><div class="lbl">{e(T.NEXT_LABEL)}</div>'
+           f'<div class="d roman">{e(d)}</div><div class="w">{e(who)}{"<br>" + e(prog) if prog else ""}</div>'
            f'<div class="p">{e(where)}</div></div>')
     def voice_grid(items):
         if not items:
@@ -133,18 +135,16 @@ def main():
            f'</section>' + voice_grid(T.ACADEMY_VOICES))
 
     # ---------------- Расписание
-    ev = sorted(TL.TIMELINE)
-    svg, leftover = score.build(ev, TL.KINDS, None, TODAY, TL.human)
-    if leftover > 0:
-        print(f"ВНИМАНИЕ: {leftover} событий не поместилось в мелодию")
-    legend = ''.join(f'<span><i class="k-{k}"></i>{e(v)}</span>' for k, v in TL.KINDS.items())
-    nxt_ev = next((x for x in ev if x[0] > TODAY), ev[-1])
+    ev = TL.TIMELINE
+    vname, _ = R.VARIANTS[variant]
+    switch = ''.join(
+        f'<a href="{"index.html" if k == R_DEFAULT else f"raspisanie-{k}.html"}#raspisanie"'
+        f'{" class=on" if k == variant else ""}>Вариант {k.upper()} {e(n)}</a>'
+        for k, (n, _) in R.VARIANTS.items())
     lenta = (f'<section class="sec" id="raspisanie">{section_head("raspisanie", "концерты, лекции, мастер-классы", T.LENTA_H)}'
-             f'<p class="intro">{e(T.LENTA)}</p>'
-             f'<div class="sc-scroll">{svg}</div><div class="legend">{legend}</div>'
-             f'<div class="evcard" id="ev" aria-live="polite">'
-             f'<span class="when">{e(TL.human(nxt_ev[0]))} · {e(TL.KINDS[nxt_ev[1]])}</span>'
-             f'<span class="what">{e(nxt_ev[2])}</span><span class="where">{e(nxt_ev[3])}</span></div></section>')
+             f'<div class="vswitch">{switch}</div>'
+             f'<p class="intro">{e(T.LENTA_INTRO[variant])}</p>'
+             f'<div class="sch">{R.render(variant)}</div></section>')
 
     # ---------------- Контакт
     kon = (f'<section class="sec contact" id="kontakt">{section_head("kontakt", "концерты, лекции, мастер-классы", T.KON_H)}'
@@ -155,10 +155,12 @@ def main():
 
     page = TEMPLATE.replace("{{TITLE}}", e(T.TITLE)).replace("{{DESC}}", e(T.DESC)) \
         .replace("{{FONTS}}", FONTS_REL) \
+        .replace("{{SCH_CSS}}", R.CSS).replace("{{SCH_JS}}", R.JS) \
         .replace("{{BODY}}", hero + "<main>" + mission + muz + kou + pro + lenta + kon + "</main>")
-    with open(os.path.join(HERE, "index.html"), "w", encoding="utf-8") as f:
+    out = "index.html" if variant == R_DEFAULT else f"raspisanie-{variant}.html"
+    with open(os.path.join(HERE, out), "w", encoding="utf-8") as f:
         f.write(page)
-    print(f"собрано: index.html ({len(page)/1024:.0f} КБ), событий {len(ev)}")
+    print(f"собрано: {out} ({len(page)/1024:.0f} КБ), событий {len(ev)}")
 
 
 TEMPLATE = r"""<!doctype html>
@@ -354,33 +356,20 @@ footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px 30px;p
   .band{min-height:70svh}.band.short{min-height:50svh}
 }
 @media (hover:none){.leaf img{filter:saturate(.9) brightness(.85)}}
+{{SCH_CSS}}
+.vswitch{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}
+.vswitch a{border:1px dashed var(--dim);padding:6px 12px;font-size:14px;text-decoration:none;color:var(--dim)}
+.vswitch a.on{border-style:solid;border-color:#F2D27A;color:#F2D27A}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto}}
 </style>
 </head>
 <body>
 {{BODY}}
-<script>
-(function(){
-  var box=document.getElementById('ev');
-  function show(g){
-    box.querySelector('.when').textContent=g.dataset.when+' · '+g.dataset.kind;
-    box.querySelector('.what').textContent=g.dataset.what;
-    box.querySelector('.where').textContent=g.dataset.where;
-    var cur=document.querySelector('.sc-note.on'); if(cur) cur.classList.remove('on');
-    g.classList.add('on');
-  }
-  document.querySelectorAll('.sc-note').forEach(function(g){
-    g.addEventListener('mouseenter',function(){show(g);});
-    g.addEventListener('focus',function(){show(g);});
-    g.addEventListener('click',function(){show(g);});
-    g.addEventListener('keydown',function(ev){if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();show(g);}});
-  });
-  var sc=document.querySelector('.sc-scroll'); if(sc){sc.scrollLeft=sc.scrollWidth;}
-})();
-</script>
+<script>{{SCH_JS}}</script>
 </body>
 </html>
 """
 
 if __name__ == "__main__":
-    main()
+    for v in R.VARIANTS:
+        main(v)

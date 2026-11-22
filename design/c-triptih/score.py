@@ -61,15 +61,19 @@ def esc(s):
              .replace('"', '&quot;'))
 
 
-def build(events, kinds, colors, today, human):
-    """events: список (дата, вид, что, где), уже отсортированный по дате."""
+def build(events, kinds, colors, today, human, bars=None, label=None):
+    """events: список (дата, вид, что, где[, особое]), уже отсортированный по дате.
+    bars: такты мелодии (по умолчанию BARS); label: подпись над нотой вместо года.
+    22.11.2026: нота при наведении не масштабируется (уезжала вправо), вместо этого
+    вокруг головки появляется кольцо sc-hov; особое событие обведено кольцом sc-ring."""
+    bars = bars or BARS
     out = []
     notes = []            # (x, высота, длительность, малая ли)
     runs = []             # группы восьмых под ребром
     bar_x = []
 
     x = HEAD
-    for bi, bar in enumerate(BARS):
+    for bi, bar in enumerate(bars):
         bar_x.append(x)
         pos = x
         run = []
@@ -192,20 +196,25 @@ def build(events, kinds, colors, today, human):
             svg.append(f'<text class="sc-gl sc-dot" x="{nx+1.7*SS:.1f}" y="{dy:.1f}">{GLYPH["dot"]}</text>')
 
         if ev_i < len(events):
-            iso, kind, what, where = events[ev_i]
+            iso, kind, what, where = events[ev_i][:4]
+            hl = len(events[ev_i]) > 4 and events[ev_i][4]
             future = iso > today
             head = GLYPH['hollow'] if future else GLYPH['black']
-            cls = f'sc-note k-{kind}' + (' is-future' if future else '')
-            yr = iso[:4]
+            cls = f'sc-note k-{kind}' + (' is-future' if future else '') + (' is-hl' if hl else '')
+            yr = label(iso) if label else iso[:4]
             if yr not in years:
                 years[yr] = nx
+            cx = nx + 0.6 * SS
+            ring = (f'<circle class="sc-ring" cx="{cx:.1f}" cy="{ny:.1f}" r="{1.25*SS:.1f}"/>'
+                    if hl else '')
             svg.append(
                 f'<g class="{cls}" tabindex="0" role="button" data-i="{ev_i}" '
                 f'data-when="{esc(human(iso))}" data-kind="{esc(kinds[kind])}" '
                 f'data-what="{esc(what)}" data-where="{esc(where)}" '
                 f'aria-label="{esc(human(iso))}, {esc(kinds[kind])}, {esc(what)}">'
+                f'<circle class="sc-hov" cx="{cx:.1f}" cy="{ny:.1f}" r="{1.05*SS:.1f}"/>{ring}'
                 f'<text class="sc-gl sc-head" x="{nx:.1f}" y="{ny:.1f}">{head}</text>'
-                f'<circle class="sc-hit" cx="{nx+0.6*SS:.1f}" cy="{ny:.1f}" r="{1.5*SS:.1f}"/>'
+                f'<circle class="sc-hit" cx="{cx:.1f}" cy="{ny:.1f}" r="{1.5*SS:.1f}"/>'
                 f'</g>')
             ev_i += 1
         else:
