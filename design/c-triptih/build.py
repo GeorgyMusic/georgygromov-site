@@ -67,7 +67,20 @@ def main():
                f'<div class="paths">{paths}</div></section>')
 
     # ---------------- Музыкант
-    halls = ''.join(f'<li><span>{e(a)}</span><span>{e(b)}</span></li>' for a, b in T.HALLS)
+    refs = ''.join(
+        f'<figure class="ref"><img src="foto/{ph}.jpg" alt="{e(n)}" loading="lazy">'
+        f'<figcaption><blockquote>{q(t)}</blockquote><cite>{e(n)}<span>{e(r)}</span></cite></figcaption></figure>'
+        for ph, t, n, r in T.REFS)
+    gal = ''.join(
+        f'<a class="g" href="foto/{ph}.jpg" target="_blank" rel="noopener">'
+        f'<img src="foto/{ph}.jpg" alt="{e(c) or "Георгий Громов на концерте"}" loading="lazy">'
+        + (f'<span>{e(c)}</span>' if c else '') + '</a>'
+        for ph, c in T.GALLERY) + f'<div class="g g-wait"><span>{e(T.GALLERY_WAIT)}</span></div>'
+    vids = ''.join(
+        f'<figure class="vid"><div class="frame"><iframe src="https://www.youtube-nocookie.com/embed/{v}" '
+        f'title="{e(t)}" loading="lazy" allow="encrypted-media; picture-in-picture; fullscreen" '
+        f'allowfullscreen></iframe></div><figcaption><b>{e(t)}</b><span>{e(n)}</span></figcaption></figure>'
+        for v, t, n in T.VIDEOS)
     d, where, who, prog = T.NEXT
     nxt = (f'<div class="next"><div class="lbl">Ближайший концерт</div>'
            f'<div class="d roman">{e(d)}</div><div class="w">{e(who)}<br>{e(prog)}</div>'
@@ -78,15 +91,14 @@ def main():
         return '<div class="voices">' + ''.join(
             f'<div><blockquote>{q(t)}</blockquote><cite>{e(n)}<span>{e(r)}</span></cite></div>'
             for t, n, r in items) + '</div>'
-    voices = ''.join(f'<div><blockquote>{q(t)}</blockquote><cite>{e(n)}<span>{e(r)}</span></cite></div>'
-                     for t, n, r in T.VOICES_MUZ)
     press = ''.join(f'<p>{q(t)}</p>' for t in T.PRESS)
     muz = (f'<section class="sec" id="muzykant">{section_head("muzykant", T.MUZ_EYEBROW, "Музыкант")}'
-           f'<div class="cols"><div><p class="big">{e(T.MUZ_LEAD)}</p>'
+           f'<div class="refs">{refs}</div>'
+           f'<div class="cols bio"><div><p class="big">{e(T.MUZ_LEAD)}</p>'
            + ''.join(f'<p>{e(p)}</p>' for p in T.MUZ) +
-           f'</div><div><ul class="halls">{halls}</ul>{nxt}</div></div></section>'
+           f'{nxt}</div><div class="gallery">{gal}</div></div>'
+           f'<div class="vids">{vids}</div></section>'
            + band(*T.BAND_MUZ[:2], *T.BAND_MUZ[2:]) +
-           f'<div class="voices">{voices}</div>'
            f'<div class="press"><div class="lbl">Пресса</div>{press}<small>{e(T.PRESS_SRC)}</small></div>'
            f'<div class="comp"><h3 class="roman">{e(T.COMP_H)}</h3><div class="cols"><div>'
            + ''.join(f'<p>{e(p)}</p>' for p in T.COMP) +
@@ -138,7 +150,8 @@ def main():
     kon = (f'<section class="sec contact" id="kontakt">{section_head("kontakt", "концерты, лекции, мастер-классы", T.KON_H)}'
            f'<p class="big">{e(T.KON)}</p><a class="mail" href="mailto:{T.MAIL}">{T.MAIL}</a></section>'
            f'<footer><span>© {e(T.NAME)}, Берлин</span>'
-           f'<span>Нотная графика: шрифт Bravura (OFL). Мелодия: W. A. Mozart, KV 525, такты 1–7</span></footer>')
+           f'<span>Нотная графика: шрифт Bravura (OFL). Мелодия: W. A. Mozart, KV 525, такты 1–7</span>'
+           f'<span class="credits">{e(T.PHOTO_CREDITS)}</span></footer>')
 
     page = TEMPLATE.replace("{{TITLE}}", e(T.TITLE)).replace("{{DESC}}", e(T.DESC)) \
         .replace("{{FONTS}}", FONTS_REL) \
@@ -225,7 +238,33 @@ a{color:inherit}
 .akadem li{display:grid;grid-template-columns:8.5em 1fr;gap:16px;padding:14px 0;border-bottom:1px solid var(--line);font-size:17px}
 .akadem .when{color:var(--sage)}
 .akadem i{display:block;font-style:normal;color:var(--dim);font-size:15px;margin-top:2px}
-.next{border:1px solid var(--sage);padding:22px 24px}
+.next{border:1px solid var(--sage);padding:22px 24px;margin-top:36px}
+/* отзывы музыкантов под заголовком */
+.refs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(24px,3.5vw,56px);margin-top:clamp(36px,5vw,64px)}
+.ref{margin:0;display:grid;grid-template-columns:88px 1fr;gap:20px;align-items:start}
+.ref img{width:88px;height:88px;border-radius:50%;object-fit:cover;filter:grayscale(1);border:1px solid var(--line)}
+.ref blockquote{margin:0;font-size:clamp(18px,1.4vw,21px);line-height:1.42}
+.ref cite{display:block;margin-top:14px;font-style:normal;font-size:15px;color:var(--sage);letter-spacing:.04em;text-transform:uppercase}
+.ref cite span{display:block;text-transform:none;letter-spacing:0;color:var(--dim);margin-top:2px}
+.bio{margin-top:clamp(60px,8vw,110px)}
+/* галерея */
+.gallery{display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:clamp(150px,15vw,230px);gap:10px;align-self:start}
+.g{position:relative;display:block;overflow:hidden;background:var(--night2)}
+.g:first-child{grid-row:span 2}
+.g img{width:100%;height:100%;object-fit:cover;transition:transform .8s,filter .6s;filter:saturate(.85)}
+.g:hover img{transform:scale(1.04);filter:saturate(1)}
+.g span{position:absolute;left:10px;bottom:8px;font-size:13px;color:var(--chalk);text-shadow:0 1px 6px rgba(0,0,0,.8)}
+.g-wait{grid-column:span 2;display:flex;align-items:center;justify-content:center;border:1px dashed var(--dim);background:transparent}
+.g-wait span{position:static;color:var(--dim);font-size:14px;text-shadow:none;text-align:center;padding:10px}
+/* видео */
+.vids{display:grid;grid-template-columns:1fr 1fr;gap:clamp(20px,3vw,48px);margin-top:clamp(60px,8vw,110px)}
+.vid{margin:0}
+.frame{position:relative;aspect-ratio:16/9;background:#000}
+.frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vid figcaption{margin-top:12px}
+.vid b{display:block;font-weight:400;font-size:19px}
+.vid span{display:block;color:var(--dim);font-size:15px;margin-top:2px}
+footer .credits{flex-basis:100%;font-size:12px}
 .next .d{font-size:clamp(30px,2.6vw,40px);line-height:1;margin-bottom:10px}
 .next .w{font-size:18px;line-height:1.45}
 .next .p{color:var(--dim);font-size:15px;margin-top:8px}
@@ -308,7 +347,8 @@ footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px 30px;p
   .top nav{display:none}
   .name{position:relative;background:var(--night);flex-direction:column;align-items:flex-start;padding-top:28px}
   .name .q{text-align:left}
-  .cols,.voices,.trips,.paths{grid-template-columns:1fr}
+  .cols,.voices,.trips,.paths,.refs,.vids{grid-template-columns:1fr}
+  .ref{grid-template-columns:64px 1fr}.ref img{width:64px;height:64px}
   .press{columns:1}
   .akadem li{grid-template-columns:1fr;gap:2px}
   .band{min-height:70svh}.band.short{min-height:50svh}
