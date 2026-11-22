@@ -106,7 +106,9 @@ def main():
            + voice_grid(T.VOICES_PRO) +
            f'<section class="sec trips-sec"><div class="trips"><figure><img src="foto/p2.jpg" alt="" loading="lazy"></figure>'
            f'<div><h3 class="roman">{e(T.TRIPS_H)}</h3><p>{e(T.TRIPS)}</p>'
-           f'<a class="more-link" href="{e(T.TRIPS_LINK[1])}">{e(T.TRIPS_LINK[0])} →</a></div></div></section>')
+           f'<a class="more-link" href="{e(T.TRIPS_LINK[1])}">{e(T.TRIPS_LINK[0])} →</a></div></div>'
+           f'<div class="academy"><h3 class="roman">{e(T.ACADEMY_H)}</h3><p class="big">{e(T.ACADEMY)}</p></div>'
+           f'</section>' + voice_grid(T.ACADEMY_VOICES))
 
     # ---------------- Расписание
     ev = sorted(TL.TIMELINE)
@@ -231,6 +233,10 @@ a{color:inherit}
 .comp .cols{margin-top:clamp(20px,3vw,40px);align-items:center}
 .comp blockquote{margin:0;font-family:'Forum',serif;font-size:clamp(34px,4vw,64px);line-height:1.05;color:var(--sage)}
 .comp cite{display:block;margin-top:16px;font:300 16px/1.4 'Ysabeau Office';color:var(--dim)}
+.academy{margin-top:clamp(70px,9vw,130px);padding-top:clamp(40px,5vw,70px);border-top:1px solid var(--line);max-width:1100px}
+.academy h3{font-size:clamp(30px,3.4vw,54px);line-height:1;margin:0 0 24px}
+.academy .big{margin:0}
+.academy + .voices,.sec .academy ~ .voices{padding-top:0}
 .trips-sec{padding-top:clamp(70px,9vw,130px)}
 .voices + .sec{padding-top:clamp(90px,12vw,170px)}
 .trips figure{margin:0}
